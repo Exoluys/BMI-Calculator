@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import (QMainWindow, QApplication, QVBoxLayout, QLabel, QPushButton, QLineEdit, QMessageBox,
                              QWidget, QGridLayout)
-from PyQt6.QtGui import QIntValidator
+from PyQt6.QtGui import QIntValidator, QIcon
 from PyQt6.QtCore import Qt
 import sys
 import pymysql
@@ -21,6 +21,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("BMI Calculator")
+        self.setWindowIcon(QIcon("icon.png"))
         self.setMinimumSize(350, 160)
 
         central_widget = QWidget(self)
@@ -45,6 +46,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(calculate_button, 2, 0, 1, 2, Qt.AlignmentFlag.AlignCenter)
 
         self.result_label = QLabel("")
+        self.result_label.setStyleSheet("font-size: 15px; font-weight: bold")
         layout.addWidget(self.result_label, 3, 0, 1, 2)
 
         central_widget.setLayout(layout)
@@ -88,6 +90,7 @@ class BMICalculator:
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyleSheet("font-family: Arial; font-size: 12px;")
     main_window = MainWindow()
     main_window.show()
     sys.exit(app.exec())
