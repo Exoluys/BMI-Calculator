@@ -1,6 +1,6 @@
 import os
 from PyQt6.QtWidgets import (QMainWindow, QApplication, QVBoxLayout, QLabel, QPushButton, QLineEdit, QMessageBox,
-                             QWidget, QGridLayout)
+                             QWidget, QGridLayout, QDialog)
 from PyQt6.QtGui import QIntValidator, QIcon, QRegularExpressionValidator
 from PyQt6.QtCore import Qt, QRegularExpression
 import sys
@@ -52,12 +52,13 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("BMI Calculator")
         self.setWindowIcon(QIcon("icon.png"))
-        self.setMinimumSize(380, 200)
+        self.setMinimumSize(350, 200)
 
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
 
         layout = QGridLayout()
+        layout.setHorizontalSpacing(20)
 
         name_label = QLabel("Enter your name:")
         self.name_edit = QLineEdit()
@@ -80,6 +81,10 @@ class MainWindow(QMainWindow):
         calculate_button = QPushButton("Calculate")
         calculate_button.clicked.connect(self.calculator)
         layout.addWidget(calculate_button, 3, 0, 1, 2, Qt.AlignmentFlag.AlignCenter)
+
+        self.history_button = QPushButton("History")
+        self.history_button.clicked.connect(self.history)
+        layout.addWidget(self.history_button, 3, 1, 1, 2, Qt.AlignmentFlag.AlignCenter)
 
         self.save_button = QPushButton("Save")
         self.save_button.clicked.connect(self.save_to_database)
@@ -162,6 +167,10 @@ class MainWindow(QMainWindow):
         except Exception as e:
             QMessageBox.critical(self, "Unexpected Error", f"An error occurred: {e}")
 
+    def history(self):
+        dialog = HistoryDialog()
+        dialog.exec_()
+
 
 class BMICalculator:
     def __init__(self, height, weight):
@@ -174,9 +183,14 @@ class BMICalculator:
         return round(result, 2)
 
 
+class HistoryDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("History")
+        self.setFixedSize(300, 300)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setStyleSheet("font-family: Arial; font-size: 12px;")
     main_window = MainWindow()
     main_window.show()
     sys.exit(app.exec())
