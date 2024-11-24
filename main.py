@@ -168,7 +168,7 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, "Unexpected Error", f"An error occurred: {e}")
 
     def history(self):
-        username = self.name_edit.text().strip()
+        username = self.name_edit.text().lower().strip()
         if not username:
             QMessageBox.warning(self, "Input Error", "Name cannot be empty.")
             return
