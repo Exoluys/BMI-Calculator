@@ -5,7 +5,6 @@ from PyQt6.QtGui import QIntValidator, QIcon, QRegularExpressionValidator
 from PyQt6.QtCore import Qt, QRegularExpression
 import sys
 import pymysql
-import re
 from dotenv import load_dotenv
 
 load_dotenv()
