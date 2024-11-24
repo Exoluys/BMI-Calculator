@@ -195,8 +195,6 @@ class HistoryDialog(QDialog):
         self.setWindowIcon(QIcon("icon.png"))
         self.setFixedSize(400, 300)
 
-        print(username)
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
