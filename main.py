@@ -167,9 +167,14 @@ class MainWindow(QMainWindow):
         except Exception as e:
             QMessageBox.critical(self, "Unexpected Error", f"An error occurred: {e}")
 
-    def history(self):
-        dialog = HistoryDialog()
-        dialog.exec_()
+    def history(self, username):
+        username = self.name_edit.text().strip()
+        if not username:
+            QMessageBox.warning(self, "Input Error", "Name cannot be empty.")
+            return
+
+        dialog = HistoryDialog(username)
+        dialog.exec()
 
 
 class BMICalculator:
@@ -184,10 +189,14 @@ class BMICalculator:
 
 
 class HistoryDialog(QDialog):
-    def __init__(self):
+    def __init__(self, username):
         super().__init__()
         self.setWindowTitle("History")
-        self.setFixedSize(300, 300)
+        self.setWindowIcon(QIcon("icon.png"))
+        self.setFixedSize(400, 300)
+
+        print(username)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
