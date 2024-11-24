@@ -1,10 +1,11 @@
 import os
 from PyQt6.QtWidgets import (QMainWindow, QApplication, QVBoxLayout, QLabel, QPushButton, QLineEdit, QMessageBox,
-                             QWidget, QGridLayout, QDialog)
+                             QWidget, QGridLayout, QDialog, QTableWidget, QTableWidgetItem)
 from PyQt6.QtGui import QIntValidator, QIcon, QRegularExpressionValidator
 from PyQt6.QtCore import Qt, QRegularExpression
 import sys
 import pymysql
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -173,7 +174,7 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Input Error", "Name cannot be empty.")
             return
 
-        dialog = HistoryDialog(username)
+        dialog = HistoryDialog(username, self.database)
         dialog.exec()
 
 
@@ -189,11 +190,42 @@ class BMICalculator:
 
 
 class HistoryDialog(QDialog):
-    def __init__(self, username):
+    def __init__(self, username, database):
         super().__init__()
         self.setWindowTitle("History")
         self.setWindowIcon(QIcon("icon.png"))
-        self.setFixedSize(400, 300)
+        self.setFixedSize(540, 300)
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        self.table_widget = QTableWidget()
+        layout.addWidget(self.table_widget)
+
+        try:
+            connection = database.connect()
+            cursor = connection.cursor()
+
+            cursor.execute(f"SELECT record_time, height_cm, weight_kg, bmi, category FROM bmi_records_{username}")
+            records = cursor.fetchall()
+
+            if records:
+                self.table_widget.setRowCount(len(records))
+                self.table_widget.setColumnCount(5)
+                self.table_widget.setHorizontalHeaderLabels(
+                    ["Record Time", "Height (cm)", "Weight (kg)", "BMI", "Category"])
+
+                for row_index, record in enumerate(records):
+                    for col_index, value in enumerate(record):
+                        self.table_widget.setItem(row_index, col_index, QTableWidgetItem(str(value)))
+
+        except pymysql.MySQLError as e:
+            layout.addWidget(QMessageBox.warning(self,  "Error", f"An error occurred: {e}"))
+
+        finally:
+            if connection.open:
+                cursor.close()
+                connection.close()
 
 
 if __name__ == "__main__":
