@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("BMI Calculator")
         self.setWindowIcon(QIcon("icon.png"))
-        self.setMinimumSize(380, 250)
+        self.setMinimumSize(380, 200)
 
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -81,13 +81,14 @@ class MainWindow(QMainWindow):
         calculate_button.clicked.connect(self.calculator)
         layout.addWidget(calculate_button, 3, 0, 1, 2, Qt.AlignmentFlag.AlignCenter)
 
-        save_button = QPushButton("Save")
-        save_button.clicked.connect(self.save_to_database)
-        layout.addWidget(save_button, 4, 0, 1, 2, Qt.AlignmentFlag.AlignCenter)
+        self.save_button = QPushButton("Save")
+        self.save_button.clicked.connect(self.save_to_database)
+        layout.addWidget(self.save_button, 4, 1, 1, 2, Qt.AlignmentFlag.AlignRight)
+        self.save_button.setVisible(False)
 
         self.result_label = QLabel("")
-        self.result_label.setStyleSheet("font-size: 15px; font-weight: bold")
-        layout.addWidget(self.result_label, 5, 0, 1, 2)
+        self.result_label.setStyleSheet("font-size: 12px; font-weight: bold")
+        layout.addWidget(self.result_label, 4, 0, 1, 1)
 
         central_widget.setLayout(layout)
 
@@ -107,6 +108,7 @@ class MainWindow(QMainWindow):
             self.bmi = cal.calculate()
             self.status = self.get_status(self.bmi)
             self.display(self.bmi)
+            self.save_button.setVisible(True)
         except ValueError:
             QMessageBox.warning(self, "Input Error", "Please enter valid numbers for height and weight.")
 
@@ -168,7 +170,8 @@ class BMICalculator:
 
     def calculate(self):
         height_in_meters = self.height / 100
-        return self.weight / (height_in_meters ** 2)
+        result = self.weight / (height_in_meters ** 2)
+        return round(result, 2)
 
 
 if __name__ == "__main__":
