@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("BMI Calculator")
         self.setWindowIcon(QIcon("icon.png"))
-        self.setMinimumSize(380, 190)
+        self.setMinimumSize(380, 200)
 
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
